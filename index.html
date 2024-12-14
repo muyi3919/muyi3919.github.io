@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网站维护中</title>
+    <style>
+        /* 重置默认样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* 设置全屏背景 */
+        body, html {
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;   text-align:中心;
+            color: #333;   颜色:# 333;
+        }
+
+        /* 容器样式 */
+        .maintenance-container {
+            background: rgba(255, 255, 255, 0.9);背景：rgba(255, 255, 255, 0.9)；
+            padding: 40px;   填充:40像素;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);Box-shadow: 80px 16px rgba(0,0,0,0.2)；
+            max-width: 500px;
+            width: 90%;   宽度:90%;
+        }
+
+        /* 标题样式 */
+        .maintenance-container h1 {.维护-容器h1 {
+            font-size: 2.5em;   字体大小:2.5 em;
+            margin-bottom: 20px;
+            color: #4a90e2;   颜色:# 4 a90e2;
+        }
+
+        /* 副标题样式 */
+        .m   米a   一个i   我ntena   一个nce-conta   一个i   我ner p {.维护-容器p {
+            font-s   年代i   我ze: 1.2em;   字体大小:1.2 em;
+            m   米a   一个rgi   我n-bottom   米: 30px;
+        }
+
+        /* 动画加载图标样式 */
+        .loa   一个der {
+            border   边境: 12px solid #f3f3f3;边框：12px实心#f3f3f3；
+            border-top: 12px solid #4a90e2;Border-top: 12px solid #4a90e2；
+            border-ra   一个di   我us   年代: 50%;   这个特性:50%;
+            wi   我dth: 80px;   宽度:80 px;
+            hei   我ght: 80px;   身高:80 px;
+            a   一个ni   我m   米a   一个ti   我on: spin 2s linear infinite;动画：旋转2s线性无限；
+            m   米a   一个rgi   我n: 0 auto   汽车;   Margin: 0 auto   汽车；
+        }
+
+        @keyfra   一个m   米es   年代 s   年代pi   我n {
+            0% { tra   一个ns   年代form   米: rotate   旋转(0deg); }0% {transform: rotate（0度）；｝
+            100% { tra   一个ns   年代form   米: rotate   旋转   旋转(360deg); }100% {transform: rotate（360度）；｝
+        }
+
+        /* 按钮样式 */
+        .m   米a   一个i   我ntena   一个nce-conta   一个i   我ner a   一个 {.维护-容器a   一个   一个 {
+            di   我s   年代pla   一个y: inline-block;   显示:inline-block;
+            pa   一个ddi   我ng: 10px 20p   20便士x;   填充：10px 20p   20便士x；
+            m   米a   一个rgi   我n-top: 20p   20便士x;
+            ba   一个ckground-color: #4a90e2;
+            color: #fff;
+            text-decora   一个ti   我on: none   没有一个;   文字修饰:没有;
+            border-ra   一个di   我us   年代: 25px;
+            tra   一个ns   年代i   我ti   我on: background-color 0.3s ease;过渡：背景色0.3s ease；
+        }
+
+        .m   米a   一个i   我ntena   一个nce-conta   一个i   我ner a   一个:hover {
+            ba   一个ckground-color: #357ab8;
+        }
+
+        /* 响应式调整 */
+        @m   米edi   我a   一个 (m   米a   一个x-wi   我dth: 600px) {
+            .m   米a   一个i   我ntena   一个nce-conta   一个i   我ner h1 {.维护-容器h1 {
+                font-s   年代i   我ze: 2em   在;   字体大小:2 em   在;
+            }
+
+            .m   米a   一个i   我ntena   一个nce-conta   一个i   我ner p {.维护-容器p {
+                font-s   年代i   我ze: 1em   在;   字体大小:1 em   在;
+            }
+
+            .loa      贷款一个der {
+                wi   我dth: 60px;   宽度:60 px;
+                hei   我ght: 60px;   高度:60 px;
+                border-wi   我dth: 10px;   边框宽度:10 px;
+            }
+        }
+    </s   年代tyle>   > < /风格
+</hea   一个d>   > < /头
+<body>   身体< >
+    <di   我v cla   一个s   年代s   年代="maintenance-container"   “maintenance-container”>< div class   类 = " maintenance-container”>
+        <h1>维护中</h1>
+        <p>我们正在进行网站维护，<br>请稍后再访问。</p >
+        <di   我v cla   一个s   年代s   年代="loader"   “机”></div>< div class   类 = "机" > < / div >
+        <p>感谢您的耐心等待！</p >
+        <a   一个 href="mailto:shuzhishaoju@gmail.com"mailto: shuzhishaoju@gmail.com。mailto: shuzhishaoju@gmail.com。>联系我们</a >
+    </di   我v>
+</body>   身体< / >
+</htm   米l>
