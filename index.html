@@ -1,110 +1,446 @@
-
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>网站维护中</title>
-    <style>
-        /* 重置默认样式 */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>网站维护中 · 即将回来</title>
+  <!-- 柔和系统字体，兼顾美观与性能 -->
+  <style>
+    /* 全局重置与基础 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        /* 设置全屏背景 */
-        body, html {
-            height: 100%;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;   text-align:中心;
-            color: #333;   颜色:# 333;
-        }
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(145deg, #f4f8fc 0%, #e6eff6 100%);
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', sans-serif;
+      padding: 1.5rem;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
 
-        /* 容器样式 */
-        .maintenance-container {
-            background: rgba(255, 255, 255, 0.9);背景：rgba(255, 255, 255, 0.9)；
-            padding: 40px;   填充:40像素;
-            border-radius: 15px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);Box-shadow: 80px 16px rgba(0,0,0,0.2)；
-            max-width: 500px;
-            width: 90%;   宽度:90%;
-        }
+    /* 主卡片 — 毛玻璃效果，现代柔和 */
+    .maintenance-card {
+      max-width: 680px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 48px;
+      box-shadow: 
+        0 24px 48px -16px rgba(0, 20, 40, 0.25),
+        0 8px 24px -8px rgba(0, 0, 0, 0.04),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7);
+      padding: 2.8rem 2.5rem 3rem;
+      transition: all 0.2s ease;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
 
-        /* 标题样式 */
-        .maintenance-container h1 {.维护-容器h1 {
-            font-size: 2.5em;   字体大小:2.5 em;
-            margin-bottom: 20px;
-            color: #4a90e2;   颜色:# 4 a90e2;
-        }
+    /* 装饰光晕 — 右上柔和 */
+    .maintenance-card::before {
+      content: '';
+      position: absolute;
+      top: -30%;
+      right: -20%;
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle at 30% 30%, rgba(90, 170, 240, 0.08), transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+    }
 
-        /* 副标题样式 */
-        .m   米a   一个i   我ntena   一个nce-conta   一个i   我ner p {.维护-容器p {
-            font-s   年代i   我ze: 1.2em;   字体大小:1.2 em;
-            m   米a   一个rgi   我n-bottom   米: 30px;
-        }
+    .maintenance-card > * {
+      position: relative;
+      z-index: 1;
+    }
 
-        /* 动画加载图标样式 */
-        .loa   一个der {
-            border   边境: 12px solid #f3f3f3;边框：12px实心#f3f3f3；
-            border-top: 12px solid #4a90e2;Border-top: 12px solid #4a90e2；
-            border-ra   一个di   我us   年代: 50%;   这个特性:50%;
-            wi   我dth: 80px;   宽度:80 px;
-            hei   我ght: 80px;   身高:80 px;
-            a   一个ni   我m   米a   一个ti   我on: spin 2s linear infinite;动画：旋转2s线性无限；
-            m   米a   一个rgi   我n: 0 auto   汽车;   Margin: 0 auto   汽车；
-        }
+    /* 图标区 — 齿轮+扳手，带有柔和动效 */
+    .icon-tools {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.2rem;
+      font-size: 3.8rem;
+      line-height: 1;
+      color: #1d3b5c;
+      filter: drop-shadow(0 4px 10px rgba(0, 20, 30, 0.06));
+    }
 
-        @keyfra   一个m   米es   年代 s   年代pi   我n {
-            0% { tra   一个ns   年代form   米: rotate   旋转(0deg); }0% {transform: rotate（0度）；｝
-            100% { tra   一个ns   年代form   米: rotate   旋转   旋转(360deg); }100% {transform: rotate（360度）；｝
-        }
+    .icon-tools span {
+      display: inline-block;
+      transition: transform 0.3s ease;
+    }
 
-        /* 按钮样式 */
-        .m   米a   一个i   我ntena   一个nce-conta   一个i   我ner a   一个 {.维护-容器a   一个   一个 {
-            di   我s   年代pla   一个y: inline-block;   显示:inline-block;
-            pa   一个ddi   我ng: 10px 20p   20便士x;   填充：10px 20p   20便士x；
-            m   米a   一个rgi   我n-top: 20p   20便士x;
-            ba   一个ckground-color: #4a90e2;
-            color: #fff;
-            text-decora   一个ti   我on: none   没有一个;   文字修饰:没有;
-            border-ra   一个di   我us   年代: 25px;
-            tra   一个ns   年代i   我ti   我on: background-color 0.3s ease;过渡：背景色0.3s ease；
-        }
+    .icon-tools span:first-child {
+      animation: spin 12s linear infinite;
+    }
 
-        .m   米a   一个i   我ntena   一个nce-conta   一个i   我ner a   一个:hover {
-            ba   一个ckground-color: #357ab8;
-        }
+    .icon-tools span:last-child {
+      transform: rotate(10deg);
+      animation: subtleWrench 3.6s ease-in-out infinite alternate;
+    }
 
-        /* 响应式调整 */
-        @m   米edi   我a   一个 (m   米a   一个x-wi   我dth: 600px) {
-            .m   米a   一个i   我ntena   一个nce-conta   一个i   我ner h1 {.维护-容器h1 {
-                font-s   年代i   我ze: 2em   在;   字体大小:2 em   在;
-            }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
 
-            .m   米a   一个i   我ntena   一个nce-conta   一个i   我ner p {.维护-容器p {
-                font-s   年代i   我ze: 1em   在;   字体大小:1 em   在;
-            }
+    @keyframes subtleWrench {
+      0% { transform: rotate(5deg) scale(1); }
+      100% { transform: rotate(22deg) scale(1.06); }
+    }
 
-            .loa      贷款一个der {
-                wi   我dth: 60px;   宽度:60 px;
-                hei   我ght: 60px;   高度:60 px;
-                border-wi   我dth: 10px;   边框宽度:10 px;
-            }
-        }
-    </s   年代tyle>   > < /风格
-</hea   一个d>   > < /头
-<body>   身体< >
-    <di   我v cla   一个s   年代s   年代="maintenance-container"   “maintenance-container”>< div class   类 = " maintenance-container”>
-        <h1>维护中</h1>
-        <p>我们正在进行网站维护，<br>请稍后再访问。</p >
-        <di   我v cla   一个s   年代s   年代="loader"   “机”></div>< div class   类 = "机" > < / div >
-        <p>感谢您的耐心等待！</p >
-        <a   一个 href="mailto:shuzhishaoju@gmail.com"mailto: shuzhishaoju@gmail.com。mailto: shuzhishaoju@gmail.com。>联系我们</a >
-    </di   我v>
-</body>   身体< / >
-</htm   米l>
+    /* 主标题 */
+    h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #0b253b;
+      margin-bottom: 0.3rem;
+      line-height: 1.2;
+    }
+
+    /* 状态徽章 — 没有具体时间 */
+    .status-badge {
+      display: inline-block;
+      background: rgba(30, 80, 120, 0.08);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      padding: 0.4rem 1.8rem;
+      border-radius: 60px;
+      font-size: 1rem;
+      font-weight: 500;
+      color: #1f4a6e;
+      border: 1px solid rgba(60, 120, 180, 0.12);
+      margin-bottom: 1.6rem;
+      letter-spacing: 0.3px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.4);
+    }
+
+    .status-badge i {
+      font-style: normal;
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background: #2e8b57;
+      border-radius: 50%;
+      margin-right: 8px;
+      box-shadow: 0 0 0 2px rgba(46, 139, 87, 0.15);
+      vertical-align: middle;
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0% { opacity: 0.5; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1.15); }
+      100% { opacity: 0.5; transform: scale(0.9); }
+    }
+
+    /* 描述 — 移除具体时间，语气更通用 */
+    .description {
+      font-size: 1.2rem;
+      line-height: 1.6;
+      color: #1f3b4f;
+      margin: 1rem 0 1.6rem 0;
+      font-weight: 400;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 0.2rem 0.8rem;
+      border-radius: 40px;
+    }
+
+    .description strong {
+      font-weight: 600;
+      color: #0d2e44;
+    }
+
+    /* 进度条 — 保留但去除具体数值语义，仅作为视觉装饰 */
+    .progress-track {
+      width: 100%;
+      max-width: 340px;
+      margin: 1.6rem auto 2rem;
+      height: 6px;
+      background: rgba(40, 80, 120, 0.10);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 72%;
+      background: linear-gradient(90deg, #3a7ca5, #6aaedb, #3a7ca5);
+      background-size: 200% 100%;
+      border-radius: 12px;
+      animation: shimmer 3.4s ease-in-out infinite;
+      box-shadow: 0 0 10px rgba(60, 130, 190, 0.15);
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 0% 0; }
+      50% { background-position: 100% 0; }
+      100% { background-position: 0% 0; }
+    }
+
+    /* 移除ETA具体时间，替换为更通用的等待信息 */
+    .wait-message {
+      font-size: 1rem;
+      color: #2d5470;
+      background: rgba(255, 255, 255, 0.4);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      display: inline-block;
+      padding: 0.3rem 1.8rem;
+      border-radius: 40px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      margin-bottom: 2rem;
+      font-weight: 450;
+      letter-spacing: 0.2px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+
+    .wait-message i {
+      font-style: normal;
+      display: inline-block;
+      margin-right: 6px;
+    }
+
+    /* 按钮组 — 保持柔和风格 */
+    .action-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 0.4rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.8rem 2.2rem;
+      border-radius: 60px;
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      box-shadow: 0 4px 12px rgba(0, 10, 20, 0.04);
+      font-weight: 500;
+      font-size: 1rem;
+      color: #1a3f5a;
+      text-decoration: none;
+      transition: all 0.25s ease;
+      cursor: default;
+      letter-spacing: 0.3px;
+      background: rgba(235, 245, 252, 0.6);
+      border-color: rgba(80, 140, 190, 0.15);
+      color: #11334d;
+      min-width: 140px;
+    }
+
+    .btn-primary {
+      background: #1d4b6e;
+      border: 1px solid #1d4b6e;
+      color: white;
+      box-shadow: 0 6px 18px rgba(25, 70, 110, 0.15);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-weight: 500;
+    }
+
+    .btn-primary:hover {
+      background: #123a57;
+      border-color: #123a57;
+      transform: scale(1.01);
+      box-shadow: 0 10px 26px rgba(20, 60, 100, 0.20);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.97);
+    }
+
+    .btn-outline {
+      background: rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      border: 1px solid rgba(60, 120, 170, 0.20);
+      cursor: pointer;
+    }
+
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.6);
+      border-color: rgba(40, 100, 150, 0.3);
+      box-shadow: 0 8px 20px rgba(0, 20, 40, 0.06);
+      transform: translateY(-2px);
+    }
+
+    /* 页脚 — 更加简洁，移除具体日期 */
+    .footer-note {
+      margin-top: 2.6rem;
+      font-size: 0.85rem;
+      color: #3d637e;
+      opacity: 0.7;
+      letter-spacing: 0.2px;
+      border-top: 1px solid rgba(80, 140, 190, 0.08);
+      padding-top: 1.5rem;
+      display: flex;
+      justify-content: center;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-note span {
+      background: rgba(255,255,255,0.1);
+      padding: 0.1rem 0.8rem;
+      border-radius: 30px;
+    }
+
+    /* 响应式 */
+    @media (max-width: 500px) {
+      .maintenance-card {
+        padding: 2rem 1.5rem 2.2rem;
+        border-radius: 32px;
+      }
+
+      h1 {
+        font-size: 2.1rem;
+      }
+
+      .icon-tools {
+        font-size: 3rem;
+      }
+
+      .description {
+        font-size: 1rem;
+        padding: 0 0.2rem;
+      }
+
+      .btn {
+        min-width: 120px;
+        padding: 0.7rem 1.2rem;
+        font-size: 0.95rem;
+        width: 100%;
+        max-width: 220px;
+      }
+
+      .action-group {
+        gap: 0.8rem;
+      }
+
+      .wait-message {
+        font-size: 0.9rem;
+        padding: 0.3rem 1.4rem;
+      }
+    }
+
+    @media (max-width: 380px) {
+      h1 {
+        font-size: 1.8rem;
+      }
+      .maintenance-card {
+        padding: 1.6rem 1rem 1.8rem;
+      }
+    }
+
+    /* 减少动画 — 尊重系统 */
+    @media (prefers-reduced-motion: reduce) {
+      .icon-tools span:first-child,
+      .icon-tools span:last-child,
+      .progress-bar,
+      .status-badge i {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+      .btn-primary:hover,
+      .btn-outline:hover {
+        transform: none !important;
+      }
+    }
+
+    ::selection {
+      background: #b3d9f0;
+      color: #0f2a3d;
+    }
+  </style>
+</head>
+<body>
+  <main class="maintenance-card" role="article" aria-label="网站维护通知">
+    <!-- 图标 -->
+    <div class="icon-tools" aria-hidden="true">
+      <span>⚙️</span>
+      <span>🔧</span>
+    </div>
+
+    <h1>网站维护中</h1>
+
+    <div class="status-badge">
+      <i aria-hidden="true"></i> 正在升级 · 即将回来
+    </div>
+
+    <p class="description">
+      <strong>我们正在全力优化</strong> 您的使用体验。<br>
+      具体恢复时间请留意后续通知，感谢您的耐心等待。
+    </p>
+
+    <!-- 进度条 (纯装饰，无具体数值语义) -->
+    <div class="progress-track" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="维护进行中">
+      <div class="progress-bar" style="width: 72%;"></div>
+    </div>
+
+    <!-- 替换原ETA为通用等待信息 -->
+    <div class="wait-message">
+      <i>⏳</i> 我们正在努力，请稍后再来
+    </div>
+
+    <!-- 操作按钮 -->
+    <div class="action-group">
+      <a href="#" class="btn btn-primary" role="button" aria-label="刷新页面 (演示)">刷新状态</a>
+      <a href="#" class="btn btn-outline" role="button" aria-label="订阅通知 (演示)">📬 订阅通知</a>
+    </div>
+
+    <!-- 页脚 — 移除具体日期，更简洁 -->
+    <div class="footer-note">
+      <span>🛠️ 团队正在全力工作</span>
+      <span>·</span>
+      <span>✨ 稍后见</span>
+    </div>
+  </main>
+
+  <!-- 极简交互：点击按钮反馈 (仅演示) -->
+  <script>
+    (function() {
+      const buttons = document.querySelectorAll('.btn');
+      buttons.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          const originalText = this.textContent;
+          if (this.classList.contains('btn-primary')) {
+            this.textContent = '✅ 已刷新';
+            setTimeout(() => { this.textContent = originalText; }, 1600);
+          } else if (this.classList.contains('btn-outline')) {
+            this.textContent = '📬 已登记';
+            setTimeout(() => { this.textContent = originalText; }, 1600);
+          }
+          this.style.transform = 'scale(0.96)';
+          setTimeout(() => { this.style.transform = ''; }, 150);
+        });
+      });
+      console.log('🔧 网站维护中 —— 请稍后再来。');
+    })();
+  </script>
+</body>
+</html>
