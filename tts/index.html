@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edge TTS 在线语音合成</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 28px;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-title svg {
+            width: 20px;
+            height: 20px;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        .form-group label .required {
+            color: #e74c3c;
+            margin-left: 2px;
+        }
+        textarea {
+            width: 100%;
+            min-height: 140px;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            resize: vertical;
+            transition: border-color 0.2s;
+            font-family: inherit;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #4096ff;
+        }
+        .char-count {
+            text-align: right;
+            font-size: 12px;
+            color: #999;
+            margin-top: 4px;
+        }
+        .char-count.warning { color: #e6a23c; }
+        .char-count.danger { color: #e74c3c; }
+        select, input[type="text"] {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            background: #fff;
+            transition: border-color 0.2s;
+        }
+        select:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: #4096ff;
+        }
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        @media (max-width: 600px) {
+            .row { grid-template-columns: 1fr; }
+        }
+        .slider-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        input[type="range"] {
+            flex: 1;
+            height: 6px;
+            border-radius: 3px;
+            -webkit-appearance: none;
+            background: #e0e0e0;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #4096ff;
+            cursor: pointer;
+        }
+        .slider-value {
+            min-width: 60px;
+            text-align: right;
+            font-size: 14px;
+            color: #4096ff;
+            font-weight: 500;
+        }
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+        }
+        .btn {
+            flex: 1;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .btn-primary {
+            background: #1677ff;
+            color: #fff;
+        }
+        .btn-primary:hover { background: #4096ff; }
+        .btn-primary:disabled {
+            background: #b0c4de;
+            cursor: not-allowed;
+        }
+        .btn-secondary {
+            background: #f0f2f5;
+            color: #555;
+            border: 1px solid #d9d9d9;
+        }
+        .btn-secondary:hover { background: #e6e8eb; }
+        .btn-danger {
+            background: #fff2f0;
+            color: #cf1322;
+            border: 1px solid #ffccc7;
+        }
+        .btn-danger:hover { background: #fff1f0; }
+        .audio-section {
+            display: none;
+        }
+        .audio-section.active {
+            display: block;
+        }
+        audio {
+            width: 100%;
+            margin-bottom: 12px;
+        }
+        .status {
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 16px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+        .status.show { display: flex; }
+        .status-info {
+            background: #e6f7ff;
+            color: #096dd9;
+            border: 1px solid #91d5ff;
+        }
+        .status-success {
+            background: #f6ffed;
+            color: #389e0d;
+            border: 1px solid #b7eb8f;
+        }
+        .status-error {
+            background: #fff2f0;
+            color: #cf1322;
+            border: 1px solid #ffccc7;
+        }
+        .status-loading {
+            background: #fffbe6;
+            color: #d48806;
+            border: 1px solid #ffe58f;
+        }
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid #d48806;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .history-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .history-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            background: #f8f9fa;
+            transition: background 0.2s;
+        }
+        .history-item:hover { background: #f0f2f5; }
+        .history-text {
+            flex: 1;
+            font-size: 13px;
+            color: #555;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .history-meta {
+            font-size: 12px;
+            color: #999;
+            white-space: nowrap;
+        }
+        .history-actions {
+            display: flex;
+            gap: 6px;
+        }
+        .history-actions button {
+            padding: 4px 10px;
+            font-size: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background: #1677ff;
+            color: #fff;
+        }
+        .history-actions button:hover { background: #4096ff; }
+        .history-actions button.delete {
+            background: #ff4d4f;
+        }
+        .history-actions button.delete:hover { background: #ff7875; }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            font-size: 14px;
+        }
+        .api-info {
+            background: #f6ffed;
+            border: 1px solid #b7eb8f;
+            border-radius: 8px;
+            padding: 16px;
+            font-size: 13px;
+            color: #389e0d;
+            line-height: 1.8;
+        }
+        .api-info code {
+            background: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Consolas', monospace;
+            font-size: 12px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎙️ Edge TTS 在线语音合成</h1>
+            <p>基于 https://tts.kina.ink API，支持多种语音、语速、音调调节</p>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 19l7-7 3 3-7 7-3-3z"/>
+                    <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
+                    <path d="M2 2l7.586 7.586"/>
+                    <circle cx="11" cy="11" r="2"/>
+                </svg>
+                文本输入
+            </div>
+            <div class="form-group">
+                <label>合成文本 <span class="required">*</span></label>
+                <textarea id="textInput" placeholder="请输入要合成的文本，最多 5000 字..." maxlength="5000"></textarea>
+                <div class="char-count" id="charCount">0 / 5000</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                    <line x1="12" y1="19" x2="12" y2="23"/>
+                    <line x1="8" y1="23" x2="16" y2="23"/>
+                </svg>
+                语音设置
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label>选择语音</label>
+                    <select id="voiceSelect">
+                        <option value="zh-CN-XiaoxiaoNeural">晓晓 (zh-CN-XiaoxiaoNeural)</option>
+                        <option value="zh-CN-YunyangNeural">云扬 (zh-CN-YunyangNeural)</option>
+                        <option value="zh-CN-YunxiNeural">云希 (zh-CN-YunxiNeural)</option>
+                        <option value="zh-CN-YunjianNeural">云健 (zh-CN-YunjianNeural)</option>
+                        <option value="zh-CN-XiaoyiNeural">晓伊 (zh-CN-XiaoyiNeural)</option>
+                        <option value="zh-CN-XiaohanNeural">晓涵 (zh-CN-XiaohanNeural)</option>
+                        <option value="zh-CN-XiaomengNeural">晓梦 (zh-CN-XiaomengNeural)</option>
+                        <option value="zh-CN-XiaomoNeural">晓墨 (zh-CN-XiaomoNeural)</option>
+                        <option value="zh-CN-XiaoruiNeural">晓睿 (zh-CN-XiaoruiNeural)</option>
+                        <option value="zh-CN-XiaoshuangNeural">晓双 (zh-CN-XiaoshuangNeural)</option>
+                        <option value="zh-CN-XiaoyanNeural">晓颜 (zh-CN-XiaoyanNeural)</option>
+                        <option value="zh-CN-XiaoyouNeural">晓悠 (zh-CN-XiaoyouNeural)</option>
+                        <option value="zh-CN-XiaozhenNeural">晓甄 (zh-CN-XiaozhenNeural)</option>
+                        <option value="zh-CN-YunfengNeural">云枫 (zh-CN-YunfengNeural)</option>
+                        <option value="zh-CN-YunhaoNeural">云浩 (zh-CN-YunhaoNeural)</option>
+                        <option value="zh-CN-YunyeNeural">云野 (zh-CN-YunyeNeural)</option>
+                        <option value="zh-CN-YunzeNeural">云泽 (zh-CN-YunzeNeural)</option>
+                        <option value="zh-CN-YunxiaNeural">云夏 (zh-CN-YunxiaNeural)</option>
+                        <option value="zh-CN-YunjieNeural">云杰 (zh-CN-YunjieNeural)</option>
+                        <option value="zh-CN-YunxiNeural">云希 (zh-CN-YunxiNeural)</option>
+                        <option value="zh-CN-YunxiNeural">云希 (zh-CN-YunxiNeural)</option>
+                        <option value="zh-CN-YunxiNeural">云希 (zh-CN-YunxiNeural)</option>
+                        <option value="zh-CN-liaoning-XiaobeiNeural">晓北 - 辽宁 (zh-CN-liaoning-XiaobeiNeural)</option>
+                        <option value="zh-CN-shaanxi-XiaoniNeural">晓妮 - 陕西 (zh-CN-shaanxi-XiaoniNeural)</option>
+                        <option value="zh-CN-henan-YundengNeural">云登 - 河南 (zh-CN-henan-YundengNeural)</option>
+                        <option value="zh-CN-shandong-YunxiangNeural">云翔 - 山东 (zh-CN-shandong-YunxiangNeural)</option>
+                        <option value="zh-HK-HiuMaanNeural">晓曼 - 粤语 (zh-HK-HiuMaanNeural)</option>
+                        <option value="zh-HK-WanLungNeural">云龙 - 粤语 (zh-HK-WanLungNeural)</option>
+                        <option value="zh-TW-HsiaoChenNeural">晓臻 - 台湾 (zh-TW-HsiaoChenNeural)</option>
+                        <option value="zh-TW-YunJheNeural">云哲 - 台湾 (zh-TW-YunJheNeural)</option>
+                        <option value="ja-JP-NanamiNeural">七海 - 日语 (ja-JP-NanamiNeural)</option>
+                        <option value="ja-JP-KeitaNeural">圭太 - 日语 (ja-JP-KeitaNeural)</option>
+                        <option value="en-US-AriaNeural">Aria - 英语 (en-US-AriaNeural)</option>
+                        <option value="en-US-GuyNeural">Guy - 英语 (en-US-GuyNeural)</option>
+                        <option value="en-US-JennyNeural">Jenny - 英语 (en-US-JennyNeural)</option>
+                        <option value="en-GB-SoniaNeural">Sonia - 英式英语 (en-GB-SoniaNeural)</option>
+                        <option value="en-GB-RyanNeural">Ryan - 英式英语 (en-GB-RyanNeural)</option>
+                        <option value="ko-KR-SunHiNeural">SunHi - 韩语 (ko-KR-SunHiNeural)</option>
+                        <option value="ko-KR-InJoonNeural">InJoon - 韩语 (ko-KR-InJoonNeural)</option>
+                        <option value="fr-FR-DeniseNeural">Denise - 法语 (fr-FR-DeniseNeural)</option>
+                        <option value="de-DE-KatjaNeural">Katja - 德语 (de-DE-KatjaNeural)</option>
+                        <option value="ru-RU-SvetlanaNeural">Svetlana - 俄语 (ru-RU-SvetlanaNeural)</option>
+                        <option value="th-TH-PremwadeeNeural">Premwadee - 泰语 (th-TH-PremwadeeNeural)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>音频格式</label>
+                    <select id="formatSelect">
+                        <option value="mp3">MP3</option>
+                        <option value="wav">WAV</option>
+                        <option value="ogg">OGG</option>
+                        <option value="webm">WebM</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row" style="margin-top: 12px;">
+                <div class="form-group">
+                    <label>语速调节</label>
+                    <div class="slider-group">
+                        <input type="range" id="rateSlider" min="-50" max="50" value="0">
+                        <span class="slider-value" id="rateValue">+0%</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>音量调节</label>
+                    <div class="slider-group">
+                        <input type="range" id="volumeSlider" min="-50" max="50" value="0">
+                        <span class="slider-value" id="volumeValue">+0%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="margin-top: 12px;">
+                <div class="form-group">
+                    <label>音调调节</label>
+                    <div class="slider-group">
+                        <input type="range" id="pitchSlider" min="-50" max="50" value="0">
+                        <span class="slider-value" id="pitchValue">+0Hz</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="status" id="statusBox"></div>
+
+        <div class="card">
+            <div class="btn-group">
+                <button class="btn btn-primary" id="synthesizeBtn" onclick="synthesize()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="5 3 19 12 5 21 5 3"/>
+                    </svg>
+                    开始合成
+                </button>
+                <button class="btn btn-secondary" onclick="playPreview()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="5 3 19 12 5 21 5 3"/>
+                    </svg>
+                    试听
+                </button>
+                <button class="btn btn-danger" onclick="clearAll()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                    </svg>
+                    清空
+                </button>
+            </div>
+        </div>
+
+        <div class="card audio-section" id="audioSection">
+            <div class="card-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 18V5l12-2v13"/>
+                    <circle cx="6" cy="18" r="3"/>
+                    <circle cx="18" cy="16" r="3"/>
+                </svg>
+                合成结果
+            </div>
+            <audio id="audioPlayer" controls></audio>
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="downloadAudio()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    下载音频
+                </button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                </svg>
+                合成历史
+            </div>
+            <div class="history-list" id="historyList">
+                <div class="empty-state">暂无合成记录</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                    <polyline points="10 9 9 9 8 9"/>
+                </svg>
+                API 信息
+            </div>
+            <div class="api-info">
+                <strong>接口地址：</strong><code>https://tts.kina.ink</code><br>
+                <strong>GET 请求：</strong><code>/tts?text=xxx&voice=zh-CN-XiaoxiaoNeural&rate=+0%</code><br>
+                <strong>POST 请求：</strong><code>/tts</code> (JSON Body)<br>
+                <strong>语音列表：</strong><code>/voices</code><br>
+                <strong>健康检查：</strong><code>/health</code><br>
+                <strong>字数限制：</strong>单次最多 5000 字，建议超时设置为 60 秒
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://tts.kina.ink';
+        let currentAudioBlob = null;
+        let currentParams = null;
+        let history = JSON.parse(localStorage.getItem('ttsHistory') || '[]');
+
+        // 字符计数
+        document.getElementById('textInput').addEventListener('input', function() {
+            const len = this.value.length;
+            const el = document.getElementById('charCount');
+            el.textContent = len + ' / 5000';
+            el.className = 'char-count' + (len > 4500 ? ' danger' : len > 3500 ? ' warning' : '');
+        });
+
+        // 滑块更新
+        ['rate', 'volume', 'pitch'].forEach(key => {
+            const slider = document.getElementById(key + 'Slider');
+            const value = document.getElementById(key + 'Value');
+            slider.addEventListener('input', function() {
+                const v = parseInt(this.value);
+                const sign = v >= 0 ? '+' : '';
+                if (key === 'pitch') {
+                    value.textContent = sign + v + 'Hz';
+                } else {
+                    value.textContent = sign + v + '%';
+                }
+            });
+        });
+
+        function showStatus(msg, type) {
+            const box = document.getElementById('statusBox');
+            box.className = 'status status-' + type + ' show';
+            if (type === 'loading') {
+                box.innerHTML = '<div class="spinner"></div>' + msg;
+            } else {
+                box.innerHTML = msg;
+            }
+        }
+
+        function hideStatus() {
+            document.getElementById('statusBox').className = 'status';
+        }
+
+        function getParams() {
+            const text = document.getElementById('textInput').value.trim();
+            const voice = document.getElementById('voiceSelect').value;
+            const format = document.getElementById('formatSelect').value;
+            const rate = document.getElementById('rateSlider').value;
+            const volume = document.getElementById('volumeSlider').value;
+            const pitch = document.getElementById('pitchSlider').value;
+
+            const rateStr = (rate >= 0 ? '+' : '') + rate + '%';
+            const volumeStr = (volume >= 0 ? '+' : '') + volume + '%';
+            const pitchStr = (pitch >= 0 ? '+' : '') + pitch + 'Hz';
+
+            return { text, voice, format, rate: rateStr, volume: volumeStr, pitch: pitchStr };
+        }
+
+        async function synthesize() {
+            const params = getParams();
+            if (!params.text) {
+                showStatus('请输入要合成的文本', 'error');
+                return;
+            }
+            if (params.text.length > 5000) {
+                showStatus('文本超过 5000 字限制，请分段合成', 'error');
+                return;
+            }
+
+            currentParams = params;
+            const btn = document.getElementById('synthesizeBtn');
+            btn.disabled = true;
+            showStatus('正在合成语音，请稍候...', 'loading');
+
+            try {
+                const query = new URLSearchParams({
+                    text: params.text,
+                    voice: params.voice,
+                    rate: params.rate,
+                    volume: params.volume,
+                    pitch: params.pitch,
+                    format: params.format
+                });
+
+                const response = await fetch(API_BASE + '/tts?' + query.toString(), {
+                    method: 'GET'
+                });
+
+                if (!response.ok) {
+                    throw new Error('HTTP ' + response.status);
+                }
+
+                const blob = await response.blob();
+                currentAudioBlob = blob;
+
+                const audioUrl = URL.createObjectURL(blob);
+                const player = document.getElementById('audioPlayer');
+                player.src = audioUrl;
+                player.load();
+
+                document.getElementById('audioSection').classList.add('active');
+                showStatus('语音合成成功！', 'success');
+
+                // 添加到历史
+                addToHistory(params, blob.size);
+
+                // 自动播放
+                player.play().catch(() => {});
+
+            } catch (err) {
+                showStatus('合成失败: ' + err.message, 'error');
+            } finally {
+                btn.disabled = false;
+                setTimeout(hideStatus, 3000);
+            }
+        }
+
+        function playPreview() {
+            const player = document.getElementById('audioPlayer');
+            if (player.src) {
+                player.play().catch(() => {});
+            } else {
+                showStatus('请先合成语音', 'info');
+                setTimeout(hideStatus, 2000);
+            }
+        }
+
+        function downloadAudio() {
+            if (!currentAudioBlob || !currentParams) {
+                showStatus('没有可下载的音频', 'error');
+                return;
+            }
+            const url = URL.createObjectURL(currentAudioBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            const ext = currentParams.format;
+            const timestamp = new Date().toISOString().slice(0,19).replace(/[:T]/g, '-');
+            a.download = `tts_${timestamp}.${ext}`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showStatus('下载已开始', 'success');
+            setTimeout(hideStatus, 2000);
+        }
+
+        function clearAll() {
+            document.getElementById('textInput').value = '';
+            document.getElementById('charCount').textContent = '0 / 5000';
+            document.getElementById('charCount').className = 'char-count';
+            document.getElementById('audioSection').classList.remove('active');
+            document.getElementById('audioPlayer').src = '';
+            currentAudioBlob = null;
+            currentParams = null;
+            showStatus('已清空', 'info');
+            setTimeout(hideStatus, 1500);
+        }
+
+        function addToHistory(params, size) {
+            const item = {
+                text: params.text.substring(0, 50) + (params.text.length > 50 ? '...' : ''),
+                voice: params.voice,
+                time: new Date().toLocaleString('zh-CN'),
+                size: (size / 1024).toFixed(1) + ' KB'
+            };
+            history.unshift(item);
+            if (history.length > 20) history.pop();
+            localStorage.setItem('ttsHistory', JSON.stringify(history));
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const list = document.getElementById('historyList');
+            if (history.length === 0) {
+                list.innerHTML = '<div class="empty-state">暂无合成记录</div>';
+                return;
+            }
+            list.innerHTML = history.map((item, i) => `
+                <div class="history-item">
+                    <div class="history-text" title="${item.text}">${item.text}</div>
+                    <div class="history-meta">${item.voice.split('-').pop()} · ${item.size} · ${item.time}</div>
+                    <div class="history-actions">
+                        <button onclick="loadHistory(${i})">复用</button>
+                        <button class="delete" onclick="deleteHistory(${i})">删除</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadHistory(index) {
+            const item = history[index];
+            document.getElementById('textInput').value = item.text;
+            document.getElementById('charCount').textContent = item.text.length + ' / 5000';
+            showStatus('已加载历史文本', 'info');
+            setTimeout(hideStatus, 1500);
+        }
+
+        function deleteHistory(index) {
+            history.splice(index, 1);
+            localStorage.setItem('ttsHistory', JSON.stringify(history));
+            renderHistory();
+        }
+
+        // 初始化
+        renderHistory();
+
+        // 键盘快捷键
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                synthesize();
+            }
+        });
+    </script>
+</body>
+</html>
